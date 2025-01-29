@@ -1,0 +1,19 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: 3px solid #007bff;
+}
+
+.form-check img {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 5px;
+}

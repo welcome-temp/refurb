@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2 class="text-center">Contact Us</h2>
+    <form id="contactForm">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="number" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="number" name="number" required>
+      </div>
+      <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+      </div>
+      <div id="errorContainer" class="text-danger mb-3"></div>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      const errorContainer = document.getElementById('errorContainer');
+      errorContainer.textContent = ''; // Clear previous errors
+
+      try {
+        const response = await fetch('/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Your message has been sent successfully!');
+          this.reset();
+        } else {
+          errorContainer.textContent = result.error || 'An error occurred. Please try again.';
+        }
+      } catch (error) {
+        errorContainer.textContent = 'Failed to connect to the server. Please try again.';
+      }
+    });
+  </script>
+</body>
+</html>

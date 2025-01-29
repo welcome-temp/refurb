@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4">All Orders</h1>
+    <ul id="order-list" class="list-group mb-4"></ul>
+
+    <!-- Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Email: <span id="modal-email"></span></h5>
+                    <h6>Phone: <span id="modal-phone"></span></h6>
+                    <h5>Ordered Items:</h5>
+                    <ul id="modal-items" class="list-group"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function fetchOrders() {
+            try {
+                const response = await axios.get("http://localhost:3000/all-orders");
+                const orders = response.data;
+                const orderList = document.getElementById("order-list");
+
+                orders.forEach(order => {
+                    const item = document.createElement("li");
+                    item.classList.add("list-group-item");
+                    item.innerHTML = `Order from ${order.email} - Total: $${order.total_price} - ${order.timestamp}`;
+                    item.setAttribute("data-order-id", order.id);
+                    item.setAttribute("data-email", order.email);
+                    item.setAttribute("data-phone", order.phone);
+                    orderList.appendChild(item);
+                });
+
+                // Add click event to each order to open the modal
+                document.querySelectorAll("#order-list .list-group-item").forEach(orderItem => {
+                    orderItem.addEventListener("click", async (e) => {
+                        const orderId = e.target.getAttribute("data-order-id");
+                        const email = e.target.getAttribute("data-email");
+                        const phone = e.target.getAttribute("data-phone");
+
+                        // Set modal details
+                        document.getElementById("modal-email").textContent = email;
+                        document.getElementById("modal-phone").textContent = phone;
+
+                        // Fetch products for this order
+                        const productsResponse = await axios.get(`/api/products`);
+                        const products = productsResponse.data;
+                        
+                        // Get products in cart for this order
+                        const cartResponse = await axios.get(`/api/cart/${orderId}`);
+                        const cartItems = cartResponse.data;
+
+                        const modalItemsList = document.getElementById("modal-items");
+                        modalItemsList.innerHTML = ""; // Clear previous items
+
+                        // Match products in the cart with the products database
+                        cartItems.forEach(cartItem => {
+                            const product = products.find(p => p.id === cartItem.product_id);
+
+                            if (product) {
+                                const listItem = document.createElement("li");
+                                listItem.classList.add("list-group-item");
+                                listItem.innerHTML = `
+                                    <strong>Name:</strong> ${product.name} <br>
+                                    <strong>Description:</strong> ${product.description} <br>
+                                    <strong>Price:</strong> $${product.price} <br>
+                                    <img src="${product.image}" alt="${product.name}" class="img-fluid" style="max-height: 100px;">
+                                `;
+                                modalItemsList.appendChild(listItem);
+                            }
+                        });
+
+                        // Show modal
+                        const myModal = new bootstrap.Modal(document.getElementById('orderDetailsModal'), {});
+                        myModal.show();
+                    });
+                });
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+            }
+        }
+
+        fetchOrders();
+    </script>
+</body>
+</html>

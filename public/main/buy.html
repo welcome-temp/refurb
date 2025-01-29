@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4">Order Summary</h1>
+    <div id="user-details" class="mb-4"></div>
+    <ul id="cart-summary" class="list-group mb-4"></ul>
+    <p id="total-price" class="fw-bold"></p>
+
+    <button id="save-order" class="btn btn-success">Save Order</button>
+    <a href="index.html" class="btn btn-primary">Back to Home</a>
+    <a href="history.html" class="btn btn-info">View All Orders</a>
+    <a href="user-history.html" class="btn btn-warning">My Orders</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const orderDetails = JSON.parse(localStorage.getItem("orderDetails"));
+
+            if (!orderDetails) {
+                document.body.innerHTML = "<h3>No order details found. Please place an order first.</h3>";
+                return;
+            }
+
+            document.getElementById("user-details").innerHTML = `
+                <h3>User Information</h3>
+                <p><strong>Email:</strong> ${orderDetails.user.email}</p>
+                <p><strong>Phone:</strong> ${orderDetails.user.phone}</p>
+            `;
+
+            const cartSummary = document.getElementById("cart-summary");
+            let total = 0;
+            orderDetails.cartItems.forEach((item) => {
+                total += item.price;
+                const listItem = document.createElement("li");
+                listItem.classList.add("list-group-item");
+                listItem.innerHTML = `${item.name} - ${item.description} - $${item.price.toFixed(2)}`;
+                cartSummary.appendChild(listItem);
+            });
+
+            document.getElementById("total-price").textContent = `Total Price: $${total.toFixed(2)}`;
+
+             document.getElementById("save-order").addEventListener("click", async () => {
+        try {
+            const orderDetails = JSON.parse(localStorage.getItem("orderDetails"));
+            const response = await axios.post("/save-order", orderDetails);
+            
+            if (response.data.message === "Order saved successfully!") {
+                alert("Order saved successfully!");
+                window.location.href = "user-history.html";
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Failed to save order.");
+        }
+    });
+        });
+    </script>
+</body>
+</html>

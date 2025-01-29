@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Page</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow">
+          <div class="card-header text-center bg-primary text-white">
+            <h2>Refurb Pay</h2>
+          </div>
+          <div class="card-body">
+            <!-- Payment Form -->
+            <form>
+              <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="amount" class="form-label">Payment Amount</label>
+                <input type="number" class="form-control" id="amount" placeholder="Enter amount" required>
+              </div>
+
+              <h5 class="mt-4">Select Payment Method:</h5>
+              <div class="d-flex flex-wrap">
+                <!-- Visa -->
+                <div class="form-check me-3">
+                  <input
+                    class="form-check-input payment-radio"
+                    type="radio"
+                    name="paymentMethod"
+                    id="visa"
+                    value="visa"
+                    required
+                  >
+                  <label class="form-check-label" for="visa">
+                    <img src="https://img.icons8.com/color/48/visa.png" alt="Visa"> Visa
+                  </label>
+                </div>
+
+                <!-- Mastercard -->
+                <div class="form-check me-3">
+                  <input
+                    class="form-check-input payment-radio"
+                    type="radio"
+                    name="paymentMethod"
+                    id="mastercard"
+                    value="mastercard"
+                    required
+                  >
+                  <label class="form-check-label" for="mastercard">
+                    <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard"> Mastercard
+                  </label>
+                </div>
+
+                <!-- Crypto -->
+                <div class="form-check me-3">
+                  <input
+                    class="form-check-input payment-radio"
+                    type="radio"
+                    name="paymentMethod"
+                    id="crypto"
+                    value="crypto"
+                    required
+                  >
+                  <label class="form-check-label" for="crypto">
+                    <img src="https://img.icons8.com/color/48/bitcoin--v1.png" alt="Crypto"> Cryptocurrency
+                  </label>
+                </div>
+
+                <!-- PayPal -->
+                <div class="form-check me-3">
+                  <input
+                    class="form-check-input payment-radio"
+                    type="radio"
+                    name="paymentMethod"
+                    id="paypal"
+                    value="paypal"
+                    required
+                  >
+                  <label class="form-check-label" for="paypal">
+                    <img src="https://img.icons8.com/color/48/paypal.png" alt="PayPal"> PayPal
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary mt-4 w-100">Proceed to pay</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Details Modal -->
+  <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="paymentModalLabel">Payment Method Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="paymentDetails">
+          <!-- Details will be inserted dynamically -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.querySelectorAll('.payment-radio').forEach(radio => {
+      radio.addEventListener('change', (event) => {
+        const paymentDetails = {
+          visa: 'Visa is a widely accepted credit card option. Safe and secure transactions.',
+          mastercard: 'Mastercard provides excellent fraud protection and global acceptance.',
+          crypto: 'Cryptocurrency allows you to pay using Bitcoin, Ethereum, and more.',
+          paypal: 'PayPal is a secure method to pay using your PayPal account or linked cards.'
+        };
+
+        const selectedValue = event.target.value;
+        document.getElementById('paymentDetails').innerHTML = paymentDetails[selectedValue];
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+      });
+    });
+  </script>
+</body>
+</html>
