@@ -53,10 +53,6 @@ db.run(
   "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, phone TEXT, items TEXT, total_price REAL, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)"
   );
 
-  db.run(
-  "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL, phone TEXT NOT NULL, product_details TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
-        );
-
 
 //
 //
