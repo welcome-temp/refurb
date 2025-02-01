@@ -98,70 +98,8 @@ function removeFromCart(index) {
     displayMessage(`${removedItem.name} removed from cart.`);
 }
 
-// Handle Place Order Button
-function placeOrder() {
-    if (cart.length > 0) {
-        fetch("/check-session")
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === "in-session") {
-                    const orderDetails = {
-                        user: {
-                            email: data.user.email,
-                            phone: data.user.phone || "N/A"
-                        },
-                        cartItems: cart
-                    };
 
-                    localStorage.setItem("orderDetails", JSON.stringify(orderDetails));
-                
-                } else {
-                    displayError("Please log in to place an order.");
-                }
-            })
-            .catch((error) => {
-                displayError("Failed to verify session. Please try again.");
-                console.error("Error fetching session data:", error);
-            });
-    } else {
-        displayError('Your cart is empty!');
-    }
-}
-
-// Load cart from local storage
-function loadCartFromLocalStorage() {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-        cart = JSON.parse(storedCart);
-        updateCartList();
-    }
-}
-
-// Save cart to local storage
-function saveCartToLocalStorage() {
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-// Utility Functions
-function displayMessage(message) {
-    const messageContainer = document.querySelector('#message-container');
-    messageContainer.innerHTML = `<div class="alert alert-success">${message}</div>`;
-}
-
-function displayError(error) {
-    const messageContainer = document.querySelector('#message-container');
-    messageContainer.innerHTML = `<div class="alert alert-danger">${error}</div>`;
-}
-// Display success message
-function displayMessage(message) {
-    const messageContainer = document.querySelector('#message-container');
-    messageContainer.innerHTML = 
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>;
-}
-
+//display error message
 function displayMessage(message) {
     const messageContainer = document.querySelector('#message-container');
     messageContainer.innerHTML = 
